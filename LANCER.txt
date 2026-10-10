@@ -1,0 +1,47 @@
+Comment lancer le projet CodePilot
+
+1) Installer Docker
+   - sur macOS/Windows: Docker Desktop
+   - sur Linux: apt install docker.io et démarrer le service
+
+2) Construire le sandbox
+   cd codepilot
+   docker build -f backend/Dockerfile.sandbox -t codepilot-sandbox .
+
+3) Créer un environnement Python
+   cd backend
+   python3 -m venv .venv
+   source .venv/bin/activate
+   pip install -r requirements.txt
+
+4) Configurer la clé OpenAI
+   cp .env.example .env
+   Ouvre backend/.env si tu utilises le fichier local, ou modifie .env.example puis renomme-le.
+   Mets ta clé :
+   OPENAI_API_KEY=ta_cle_openai
+
+5) Lancer le backend
+   cd backend
+   source .venv/bin/activate
+   uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+
+6) Tester l’API
+   curl -X POST http://localhost:8000/projects \
+     -H "Content-Type: application/json" \
+     -d '{"name":"demoapp"}'
+
+   curl -X POST http://localhost:8000/agent/chat \
+     -H "Content-Type: application/json" \
+     -d '{"project_name":"demoapp","message":"Crée un mini site HTML avec un bouton rouge"}'
+
+7) Si tu veux utiliser docker-compose
+   cd codepilot
+   docker compose up --build
+
+8) Important
+   - Docker doit tourner
+   - OpenAI API key nécessaire
+   - Les projets sont créés dans /tmp/codepilot_projects
+
+9) Prochaine étape
+   Brancher un frontend web (React/Next.js/Monaco) pour afficher l’éditeur + chat + terminal.

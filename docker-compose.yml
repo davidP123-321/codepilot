@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  api:
+    image: python:3.11
+    working_dir: /workspace
+    command: >
+      bash -lc "
+      pip install fastapi uvicorn pydantic python-dotenv openai &&
+      uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+      "
+    volumes:
+      - ./backend:/workspace
+      - /tmp/codepilot_projects:/tmp/codepilot_projects
+    ports:
+      - "8000:8000"
